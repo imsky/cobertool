@@ -8,6 +8,11 @@ import (
 	"strconv"
 )
 
+var (
+	BuildTime string
+	BuildSHA  string
+)
+
 type Line struct {
 	Hit    bool
 	Number uint64
@@ -22,7 +27,12 @@ func Run(reports []string) {
 	sourceFiles := make(map[string][]SourceFile)
 
 	for _, reportFileName := range reports {
-		file, _ := os.Open(reportFileName)
+		file, err := os.Open(reportFileName)
+
+		if err != nil {
+			panic("Could not open file " + reportFileName)
+		}
+
 		decoder := xml.NewDecoder(file)
 
 		var sourceFilename string
@@ -47,6 +57,7 @@ func Run(reports []string) {
 						}
 					}
 				case "line":
+					//todo: could move the file line hit map calculation here if the hit count is irrelevant
 					//todo: check that class file name is set
 					var line Line
 
@@ -111,6 +122,10 @@ func Run(reports []string) {
 //todo: add flag for path-rewriting when writing source
 
 func main() {
+	flag.Usage = func () {
+		fmt.Println("cobertool", BuildSHA, BuildTime)
+	}
+
 	flag.Parse()
 	Run(flag.Args())
 }
