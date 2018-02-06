@@ -22,7 +22,46 @@ type SourceFile struct {
 	Lines []Line
 }
 
+func GetLines () []Line {
+	return make([]Line, 0, 100)
+}
+
+func ComputeTotalCoverage (sourceFiles map[string][]SourceFile) (float64) {
+	var totalCoverage float64
+
+	//todo: validate that each source file list of lines is same length
+	for _, fileSets := range sourceFiles {
+		fileLineHitMap := make(map[uint64]bool)
+
+		for _, sourceFile := range fileSets {
+			for _, line := range sourceFile.Lines {
+				fileLineHitMap[line.Number] = fileLineHitMap[line.Number] || line.Hit
+			}
+		}
+
+		totalLines := len(fileLineHitMap)
+		hitLines := 0
+
+		for _, hit := range fileLineHitMap {
+			if hit {
+				hitLines++
+			}
+		}
+
+		if totalLines > 0 {
+			totalCoverage += float64(hitLines) / float64(totalLines)
+		}
+	}
+
+	return (totalCoverage / float64(len(sourceFiles))) * 100
+}
+
 func Run(reports []string) {
+	if len(reports) != 1 {
+		flag.Usage()
+		return
+	}
+
 	//todo: rework this, it's really a map of source file names to line sets
 	sourceFiles := make(map[string][]SourceFile)
 
@@ -36,7 +75,7 @@ func Run(reports []string) {
 		decoder := xml.NewDecoder(file)
 
 		var sourceFilename string
-		var lines []Line = make([]Line, 0, 100)
+		var lines []Line = GetLines()
 
 		for {
 			t, _ := decoder.Token()
@@ -79,8 +118,7 @@ func Run(reports []string) {
 						sourceFiles[sourceFilename] = append(sourceFiles[sourceFilename], class)
 					}
 
-					//todo: use a function to reset lines
-					lines = make([]Line, 0, 100)
+					lines = GetLines()
 				}
 
 			}
@@ -90,36 +128,8 @@ func Run(reports []string) {
 		file.Close()
 	}
 
-	var totalCoverage float64
-
-	//todo: validate that each source file list of lines is same length
-	for _, fileSets := range sourceFiles {
-		fileLineHitMap := make(map[uint64]bool)
-
-		for _, sourceFile := range fileSets {
-			for _, line := range sourceFile.Lines {
-				fileLineHitMap[line.Number] = fileLineHitMap[line.Number] || line.Hit
-			}
-		}
-
-		totalLines := len(fileLineHitMap)
-		hitLines := 0
-
-		for _, hit := range fileLineHitMap {
-			if hit {
-				hitLines++
-			}
-		}
-
-		if totalLines > 0 {
-			totalCoverage += float64(hitLines) / float64(totalLines)
-		}
-	}
-
-	fmt.Println(totalCoverage / float64(len(sourceFiles)))
+	fmt.Printf("%.2f\n", ComputeTotalCoverage(sourceFiles))
 }
-
-//todo: add flag for path-rewriting when writing source
 
 func main() {
 	flag.Usage = func () {

@@ -3,6 +3,7 @@
 
 *.xml
 cobertool-*
+coverage
 
 # Executables
 *.out
