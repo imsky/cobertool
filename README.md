@@ -1,6 +1,6 @@
 # cobertool
 
-`cobertool` is a simple utility for processing [Cobertura](https://cobertura.github.io/cobertura/) code coverage reports. It can compute code coverage from multiple reports and generate HTML coverage reports.
+`cobertool` is a simple utility for processing [Cobertura](https://cobertura.github.io/cobertura/) code coverage reports. It can currently compute code coverage from multiple reports.
 
 ## Why?
 
@@ -24,7 +24,7 @@ There are also several coverage format conversion tools:
 
 ## License
 
-MIT
+[MIT](./LICENSE)
 
 ## Credits
 

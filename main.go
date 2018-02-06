@@ -22,11 +22,11 @@ type SourceFile struct {
 	Lines []Line
 }
 
-func GetLines () []Line {
+func GetLines() []Line {
 	return make([]Line, 0, 100)
 }
 
-func ComputeTotalCoverage (sourceFiles map[string][]SourceFile) (float64) {
+func ComputeTotalCoverage(sourceFiles map[string][]SourceFile) float64 {
 	var totalCoverage float64
 
 	//todo: validate that each source file list of lines is same length
@@ -132,8 +132,10 @@ func Run(reports []string) {
 }
 
 func main() {
-	flag.Usage = func () {
-		fmt.Println("cobertool", BuildSHA, BuildTime)
+	flag.Usage = func() {
+		fmt.Println("Cobertool", BuildSHA, BuildTime)
+		fmt.Println("Usage: cobertool <file> ...")
+		fmt.Println("\nCobertool uses one or more Cobertura code coverage reports to compute code coverage statistics.")
 	}
 
 	flag.Parse()

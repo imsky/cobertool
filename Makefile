@@ -8,7 +8,7 @@ LDFLAGS += -X "main.BuildSHA=${COMMIT}"
 all: quality test build
 
 quality:
-	go fmt -w *.go
+	gofmt -w *.go
 	go tool vet *.go
 
 test:
