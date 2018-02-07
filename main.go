@@ -57,7 +57,7 @@ func ComputeTotalCoverage(sourceFiles map[string][]SourceFile) float64 {
 }
 
 func Run(reports []string) {
-	if len(reports) != 1 {
+	if len(reports) == 0 {
 		flag.Usage()
 		return
 	}
