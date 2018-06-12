@@ -28,6 +28,7 @@ func GetLines() []Line {
 
 func ComputeTotalCoverage(sourceFiles map[string][]SourceFile) float64 {
 	var totalCoverage float64
+	totalFiles := 0
 
 	//todo: validate that each source file list of lines is same length
 	for _, fileSets := range sourceFiles {
@@ -49,11 +50,12 @@ func ComputeTotalCoverage(sourceFiles map[string][]SourceFile) float64 {
 		}
 
 		if totalLines > 0 {
+			totalFiles++
 			totalCoverage += float64(hitLines) / float64(totalLines)
 		}
 	}
 
-	return (totalCoverage / float64(len(sourceFiles))) * 100
+	return (totalCoverage / float64(totalFiles)) * 100
 }
 
 func Run(reports []string) {
